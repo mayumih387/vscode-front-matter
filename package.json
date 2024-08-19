@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "10.2.0",
+  "version": "10.3.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -26,10 +26,11 @@
   },
   "qna": "https://github.com/estruyf/vscode-front-matter/discussions",
   "engines": {
-    "vscode": "^1.73.0"
+    "vscode": "^1.90.0"
   },
   "l10n": "./l10n",
   "categories": [
+    "AI",
     "Other"
   ],
   "keywords": [
@@ -567,6 +568,7 @@
           "default": [],
           "markdownDescription": "%setting.frontMatter.custom.scripts.markdownDescription%",
           "items": {
+            "$id": "#customscript",
             "type": "object",
             "properties": {
               "id": {
@@ -1227,9 +1229,15 @@
               "fileType": {
                 "type": "string",
                 "default": "",
-                "enum": [
-                  "md",
-                  "mdx"
+                "oneOf": [{
+                    "enum": [
+                      "md",
+                      "mdx"
+                    ]
+                  },
+                  {
+                    "type": "string"
+                  }
                 ],
                 "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fileType.description%"
               },
@@ -1546,6 +1554,13 @@
                           "default": true,
                           "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.when.properties.caseSensitive.description%"
                         }
+                      }
+                    },
+                    "actions": {
+                      "type": "array",
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.actions.description%",
+                      "items": {
+                        "$ref": "#customscript"
                       }
                     }
                   },
@@ -1976,11 +1991,6 @@
           },
           "scope": "Taxonomy"
         },
-        "frontMatter.telemetry.disable": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "%setting.frontMatter.telemetry.disable.markdownDescription%"
-        },
         "frontMatter.templates.enabled": {
           "type": "boolean",
           "default": false,
@@ -2012,6 +2022,11 @@
             "info",
             "verbose"
           ]
+        },
+        "frontMatter.copilot.family": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "markdownDescription": "%setting.frontMatter.copilot.family.markdownDescription%"
         }
       }
     },
@@ -2267,6 +2282,12 @@
         "command": "frontMatter.preview",
         "title": "%command.frontMatter.preview%",
         "category": "Front Matter"
+      },
+      {
+        "command": "frontMatter.docs",
+        "title": "%command.frontMatter.docs%",
+        "category": "Front Matter",
+        "icon": "$(book)"
       },
       {
         "command": "frontMatter.chatbot",
@@ -2634,27 +2655,32 @@
         }
       ],
       "view/title": [{
+          "command": "frontMatter.docs",
+          "group": "navigation@-1",
+          "when": "view == frontMatter.explorer"
+        },
+        {
           "command": "frontMatter.chatbot",
           "group": "navigation@0",
           "when": "view == frontMatter.explorer"
         },
         {
-          "command": "frontMatter.collapseSections",
-          "group": "navigation@1",
-          "when": "view == frontMatter.explorer"
-        },
-        {
           "command": "frontMatter.mode.switch",
-          "group": "navigation@2",
+          "group": "navigation@1",
           "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
         },
         {
           "command": "frontMatter.project.switch",
-          "group": "navigation@3",
+          "group": "navigation@2",
           "when": "view == frontMatter.explorer && frontMatter:project:switch:enabled"
         },
         {
           "command": "frontMatter.settings.refresh",
+          "group": "navigation@3",
+          "when": "view == frontMatter.explorer"
+        },
+        {
+          "command": "frontMatter.collapseSections",
           "group": "navigation@4",
           "when": "view == frontMatter.explorer"
         },
@@ -2768,7 +2794,7 @@
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.8.0",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "^1.73.0",
+    "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@vscode-elements/elements": "^1.2.0",

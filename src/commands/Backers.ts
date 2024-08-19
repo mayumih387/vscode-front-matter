@@ -1,5 +1,5 @@
 import { authentication, commands, ExtensionContext } from 'vscode';
-import { COMMAND_NAME, CONTEXT } from '../constants';
+import { COMMAND_NAME, CONTEXT, WEBSITE_LINKS } from '../constants';
 import { Extension, Logger } from '../helpers';
 import { Dashboard } from './Dashboard';
 import { SettingsListener } from '../listeners/panel';
@@ -22,9 +22,8 @@ export class Backers {
     const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
     if (githubAuth && githubAuth.accessToken) {
       try {
-        const isBeta = ext.isBetaVersion();
         const response = await fetch(
-          `https://${isBeta ? `beta.` : ``}frontmatter.codes/api/v2/backers`,
+          `${WEBSITE_LINKS.api.baseUrl}${WEBSITE_LINKS.api.endpoints.backers}`,
           {
             method: 'POST',
             headers: {
